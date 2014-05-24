@@ -1,38 +1,18 @@
 (ns ladder
   (:require [reagent.core :as reagent :refer [atom]]
+            [historian.core :as hist]
+            [elo :refer [*starting-score* update-scores to-result]]
             [alandipert.storage-atom :refer [local-storage]]))
 
 (enable-console-print!)
 
-; --- ELO code stolen from https://github.com/ninjudd/elo/blob/master/src/elo/core.clj
-
-(def *k-factor* 32)
-
-(def *starting-score* 1200)
-
-(defn expected-result [a b]
-  (/ 1 (+ 1 (Math/pow 10 (/ (- a b) 400)))))
-
-(defn score-change [a b result]
-  (* *k-factor* (- result (expected-result a b))))
-
-(defn update-scores [scores {:keys [playerA playerB outcome]}]
-  (let [a     (or (scores playerA) *starting-score*)
-        b     (or (scores playerB) *starting-score*)
-        delta (Math/round (score-change a b outcome))]
-    (-> scores
-        (assoc playerA (- a delta))
-        (assoc playerB (+ b delta)))))
-
-(defn to-result [input]
-  (case input
-    :left 0.0
-    :right 1.0
-    :tie 0.5))
-
-; ----
+; State ----
 (def state (local-storage (atom {:scores {}
                                  :challengers []}) "ladder-state"))
+
+(hist/replace-library! (local-storage (atom []) "library"))
+(hist/replace-prophecy! (local-storage (atom []) "prophecy"))
+(hist/record! state :state)
 
 ; Reset state:
 ;;(swap! state {:scores {} :challengers []})
@@ -63,7 +43,7 @@
   (swap! state update-score! p1 p2 outcome))
 
 
-;----
+; DOM ----
 
 (defn choose-challengers [players]
   (let [players (players-in-rank-order)]
@@ -91,7 +71,7 @@
 
 (defn add-player []
   [:div
-    [:div.add-player-button.clickable
+    [:div.add-player-button.top.clickable
      {:on-click #(swap! show-add-player not)}
      "+"]
 
@@ -104,11 +84,26 @@
       [:div.hidden])
    ])
 
+(defn history-controls []
+  [:div.history-controls
+   (if (hist/can-undo?)
+     [:span.top.undo
+      {:on-click #(hist/undo!)}
+      [:i.fa.fa-undo]]
+     [:span.hidden])
+   (if (hist/can-redo?)
+     [:span.top.redo
+      {:on-click #(hist/redo!)}
+      [:i.fa.fa-repeat]]
+     [:span.hidden])
+   ])
+
 (defn simple-example []
   [:div.foo
    [choose-challengers]
    [choose-winner]
    [add-player]
+   [history-controls]
    ])
 
 (defn ^:export run []

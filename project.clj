@@ -1,16 +1,16 @@
-
-
 (defproject simple-reagent "0.4.2"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojurescript "0.0-2173"]
                  [reagent "0.4.2"]
-                 [alandipert/storage-atom "1.2.2"]]
+                 [alandipert/storage-atom "1.2.2"]
+                 ;[historian "1.0.1"]]
+                 ]
   :plugins [[lein-cljsbuild "1.0.2"]]
   :hooks [leiningen.cljsbuild]
   :profiles {:prod {:cljsbuild
                     {:builds
                      {:client {:compiler
-                               {:optimizations :advanced
+                               {:optimizations :simple ;:advanced
                                 :preamble ^:replace ["reagent/react.min.js"]
                                 :pretty-print false}}}}}
              :srcmap {:cljsbuild
