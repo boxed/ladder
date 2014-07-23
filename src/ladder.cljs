@@ -48,11 +48,11 @@
 (defn choose-challengers [players]
   (let [players (players-in-rank-order)]
     [:div.choose-challengers
-       (for [x players]
+       (doall (for [x players]
          ^{:key x} [:div.challenger.clickable
           {:on-click #(challenge! x)}
           x
-          [:span.rank (get (:scores @state) x)]])]))
+          [:span.rank (get (:scores @state) x)]]))]))
 
 (defn choose-winner []
   (let [[p1 p2] (:challengers @state)
