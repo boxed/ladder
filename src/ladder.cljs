@@ -50,7 +50,8 @@
     [:div.choose-challengers
        (doall (for [x players]
          ^{:key x} [:div.challenger.clickable
-          {:on-click #(challenge! x)}
+          {:on-click #(challenge! x)
+           :class (if (contains? (set (:challengers @state)) x) "challenged" "")}
           x
           [:span.rank (get (:scores @state) x)]]))]))
 
