@@ -33,6 +33,10 @@ body {
   width: 500px;
 }
 
+.challenged {
+  color: lightgray;
+}
+
 .vs {
   color: gray;
   font-size: 70%;
