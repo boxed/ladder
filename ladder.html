@@ -11,8 +11,11 @@
   </head>
   <body>
     <h1>...</h1>
+    <script type='application/javascript' src='fastclick.js'></script>
     <script type="text/javascript" src="target/client.js"></script>
     <script type="text/javascript">
+      var attachFastClick = Origami.fastclick;
+      attachFastClick(document.body);
       ladder.run();
     </script>
   </body>

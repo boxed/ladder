@@ -23,7 +23,9 @@
   (map first (sort-by val > (:scores @state))))
 
 (defn challenge! [x]
-  (swap! state update-in [:challengers] conj x))
+  (if (contains? (set (:challengers @state)) x)
+    (swap! state assoc :challengers [])
+    (swap! state update-in [:challengers] conj x)))
 
 (defn add-player! [name]
   (swap! state update-in [:scores] #(assoc % name 1200))
