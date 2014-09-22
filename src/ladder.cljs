@@ -10,8 +10,6 @@
 (def state (local-storage (atom {:scores {}
                                  :challengers []}) "ladder-state"))
 
-(hist/replace-library! (local-storage (atom []) "library"))
-(hist/replace-prophecy! (local-storage (atom []) "prophecy"))
 (hist/record! state :state)
 
 ; Reset state:
