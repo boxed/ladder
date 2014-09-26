@@ -10,6 +10,8 @@
 (def state (local-storage (atom {:scores {}
                                  :challengers []}) "ladder-state"))
 
+(hist/replace-library! (atom []))
+(hist/replace-prophecy! (atom []))
 (hist/record! state :state)
 
 ; Reset state:
@@ -57,8 +59,8 @@
 
 (defn choose-winner []
   (let [[p1 p2] (:challengers @state)
-        state @state]
-    (if (> (count (:challengers state)) 1)
+        s @state]
+    (if (> (count (:challengers s)) 1)
       [:div.choose-winner.fullscreen
        [:span.clickable
         {:on-click #(win! p1 p2 :left)}
@@ -67,6 +69,7 @@
        [:span.clickable
         {:on-click #(win! p1 p2 :right)}
         p2]
+       [:div.cancel {:on-click #(swap! state assoc :challengers [])} "Cancel"]
        ]
        [:div.hidden])))
 
